@@ -1,7 +1,7 @@
 import keys from '@/features/keyboard/keys'
 import QuoteTyping from "@/components/QuoteTyping";
 import Keyboard from '@/features/keyboard/Keyboard';
-import {QUOTES} from '@/data/quotes'
+import {QUOTES} from '@/constant/quotes'
 export default function Home() {
 
   const today = new Date();
