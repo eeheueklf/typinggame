@@ -12,6 +12,8 @@ interface KeyboardProps {
 
 export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [mounted, setMounted] = useState(false);
+
 
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
@@ -20,24 +22,28 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
   };
 
   useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        const key = document.querySelector(`.key--${e.code}`);
-        if (key) key.classList.add("pressed");
-      };
-  
-      const handleKeyUp = (e: KeyboardEvent) => {
-        const key = document.querySelector(`.key--${e.code}`);
-        if (key) key.classList.remove("pressed");
-      };
-  
-      document.addEventListener("keydown", handleKeyDown);
-      document.addEventListener("keyup", handleKeyUp);
-  
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-        document.removeEventListener("keyup", handleKeyUp);
-      };
-    }, []);
+    setMounted(true)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = document.querySelector(`.key--${e.code}`);
+      if (key) key.classList.add("pressed");
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const key = document.querySelector(`.key--${e.code}`);
+      if (key) key.classList.remove("pressed");
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  if(!mounted) 
+    return <p>키보드 설정 불러오는 중...</p>
 
   return (
     <KeyboardFrame>
