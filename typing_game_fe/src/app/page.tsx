@@ -1,43 +1,22 @@
 import keys from '@/features/keyboard/keys'
 import QuoteTyping from "@/components/QuoteTyping";
 import Keyboard from '@/features/keyboard/Keyboard';
+import {QUOTES} from '@/data/quotes'
+export default function Home() {
 
-const FALLBACK_QUOTE = {
-  author: "서버 연결 문제",
-  content: "오늘의 글을 불러올 수 없습니다."
-};
+  const today = new Date();
+  const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const index = dateSeed % QUOTES.length;
+  const quote = QUOTES[index];
 
-export default async function Home() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  let quote = FALLBACK_QUOTE;
-
-  try {
-    const res = await fetch(`${baseUrl}/quote/today`, {
-      cache: "no-store", //revalidate는 빌드시 서버와 연결 필요
-      signal: AbortSignal.timeout(5000)
-    });
-
-    if (!res.ok) throw new Error("Fetch failed");
-
-    const data = await res.json();
-    quote = {
-      author: data?.author ?? FALLBACK_QUOTE.author,
-      content: data?.content ?? FALLBACK_QUOTE.content,
-    };
-    // TODO: 콘솔 확인 후 안정성 패치
-  } catch (e) {
-    // console.error("서버연결실패:", e.message);
-  }
-
-return (
+  return (
     <div className="content">
       <div className="header">
-        <h1 className="title">오늘의 글</h1>
-        <h1 className="title">{quote.author ?? ""}</h1>
+        <h1 className="title">오늘의 문장</h1>
+        <h1 className="title">- {quote.author}</h1>
       </div>
       <div className="mainWrapper">
-        <QuoteTyping lyrics={quote.content ?? ""} />
+        <QuoteTyping lyrics={quote.content} />
       </div>
       <Keyboard keys={keys} />
     </div>
