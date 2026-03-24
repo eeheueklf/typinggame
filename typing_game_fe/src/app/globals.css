@@ -123,17 +123,6 @@ body {
   font-family: NunumHuman, Helvetica, sans-serif;
 }
 
-
-
-/* layout */
-.mainWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* width: 100%; */
-  background-color: var(--background);
-}
-
 /* page */
 
 .content {
@@ -150,6 +139,6 @@ body {
 }
 
 .title {
-  font-family: NunumHumanBold, Helvetica, sans-serif;
+  font-family: 'NanumHumanBold', Helvetica, sans-serif;
   margin-bottom: 0.5rem;
 }

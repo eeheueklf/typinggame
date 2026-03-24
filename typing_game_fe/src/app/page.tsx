@@ -10,7 +10,8 @@ export default function Home() {
   const quote = QUOTES[index];
 
   return (
-    <div className="content">
+        <div className="flex flex-col ">
+
       <div className="header">
         <h1 className="title">오늘의 문장</h1>
         <h1 className="title">- {quote.author}</h1>
