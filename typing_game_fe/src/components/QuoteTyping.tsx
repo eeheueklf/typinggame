@@ -58,8 +58,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const chars = totalTypedChars();
-      setCpm(Math.round(chars / (elapsed / 60000)));
+      setCpm(Math.round(totalTypedChars / (elapsed / 60000)));
     }, 100);
 
     return () => clearInterval(interval);
@@ -85,7 +84,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
           />
         )}
          <ProgressBarContainer>
-          <ProgressBarFill progress={totalTypedChars() / totalLyricsChars * 100} />
+          <ProgressBarFill progress={totalTypedChars / totalLyricsChars * 100} />
         </ProgressBarContainer> 
       <TypingLine>
         <CurrentLine>
