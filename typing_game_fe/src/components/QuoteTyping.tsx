@@ -149,7 +149,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
   const totalLyricsChars = Hangul.disassemble(lyrics, true).flat().length;
 
   return (
-    <div className="h-[370px] w-[--tpg-basic-width]">
+    <div className="h-[370px] w-[--tpg-basic-width] ">
       {completed && (
         <ResultModal
           lyrics={lyrics}
@@ -166,7 +166,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
         />
       </div>
 
-      <div className="min-h-[300px]">
+      <div className="min-h-[300px] w-full flex flex-col overflow-hidden">
         <p className="mb-4 w-full text-[length:var(--typing-size)] leading-normal">
           {lyrics.split("").map((char, i) => {
             const typedChar = inputValue[i];

@@ -20,9 +20,7 @@ export default function Home() {
           - {quote.author}
         </h1>
       </div>
-      <div className="mainWrapper">
-        <QuoteTyping lyrics={quote.content} />
-      </div>
+      <QuoteTyping lyrics={quote.content} />
       <Keyboard keys={keys} />
     </div>
   );
