@@ -8,6 +8,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        nanum: ['NanumHumanBold', 'Helvetica', 'sans-serif'],
+      },
+      fontSize: {
+        header: 'var(--tpg-header-font-size)',
+      },
       colors: {
         'key-blue': '#3b82f6',
         'key-red': '#ef4444',

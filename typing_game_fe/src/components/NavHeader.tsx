@@ -10,9 +10,9 @@ const NavHeader: React.FC= () => {
                 <Link className={styles.link} href="/">TYLE</Link>
             </div>
             <div className={styles.navBarMenu}>
-                <Link className={styles.link} href="/login">Account</Link>
-                <Link className={styles.link} href="/rank">Rank</Link>
+                <Link className={styles.link} href="/long">Long</Link>
                 <Link className={styles.link} href="/profile">Profile</Link>
+                <Link className={styles.link} href="/login">Account</Link>
             </div>
         </div>
         </nav>

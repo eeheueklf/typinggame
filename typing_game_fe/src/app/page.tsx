@@ -12,9 +12,13 @@ export default function Home() {
   return (
     <div className="flex flex-col ">
 
-      <div className="header">
-        <h1 className="title">오늘의 문장</h1>
-        <h1 className="title">- {quote.author}</h1>
+      <div className="flex justify-between w-full px-[2px] text-header">
+        <h1 className="font-nanum mb-2">
+        오늘의 문장
+        </h1>
+        <h1 className="font-nanum mb-2">
+          - {quote.author}
+        </h1>
       </div>
       <div className="mainWrapper">
         <QuoteTyping lyrics={quote.content} />

@@ -1,6 +1,5 @@
 .navContainer {
   width: 100%;
-  margin-bottom: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +8,7 @@
 
 .navBarInner {
   width: var(--tpg-basic-width);
-  padding: 10px;
+  padding: 10px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,6 +22,7 @@
 .navBarMenu {
   font-family: Montserrat, Helvetica, sans-serif;
 }
-.link {
-  margin-left: 12px;
+
+.navBarMenu a{
+  margin-left:10px;
 }

@@ -123,22 +123,3 @@ body {
   font-family: NunumHuman, Helvetica, sans-serif;
 }
 
-/* page */
-
-.content {
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: var(--tpg-header-font-size);
-  padding: 0 2px;
-}
-
-.title {
-  font-family: 'NanumHumanBold', Helvetica, sans-serif;
-  margin-bottom: 0.5rem;
-}

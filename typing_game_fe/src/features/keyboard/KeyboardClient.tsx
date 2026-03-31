@@ -40,7 +40,7 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
     };
   }, []);
 
-  if (!mounted) return <p className="p-4">키보드 설정 불러오는 중...</p>;
+  if (!mounted) return null;
 
   return (
     <div className="w-full">
