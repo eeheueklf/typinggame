@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useMemo } from "react";
 import * as Hangul from "hangul-js";
 import ResultModal from "@/components/ResultModal";
 
@@ -10,39 +9,37 @@ interface TypingLocalProps {
 }
 
 const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
-
-  const [mounted, setMounted] = useState(false); 
+  const [mounted, setMounted] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [completed, setCompleted] = useState(false);
   const [cpm, setCpm] = useState(0);
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
-  
-  const totalTypedChars = React.useMemo(() => 
-    Hangul.disassemble(inputValue, true).flat().length, 
-  [inputValue]);
+
+  const totalTypedChars = useMemo(() =>
+    Hangul.disassemble(inputValue, true).flat().length,
+    [inputValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (startTime === null) setStartTime(Date.now());
 
     if (e.key === "Enter" && inputValue.length === lyrics.length) {
-        if (startTime !== null) {
-          const timeTaken = Date.now() - startTime;
-          const chars = Hangul.disassemble(inputValue, true).flat();
-          let correct = 0;
-          for (let i = 0; i < lyrics.length; i++) {
-            if (inputValue[i] === lyrics[i]) correct++;
-          }
-          setCorrectChars(prev => prev + correct);
-          setTotalChars(prev => prev + lyrics.length);
-          setCpm(Math.round(chars.length / (timeTaken / 60000)));
+      if (startTime !== null) {
+        const timeTaken = Date.now() - startTime;
+        const chars = Hangul.disassemble(inputValue, true).flat();
+        let correct = 0;
+        for (let i = 0; i < lyrics.length; i++) {
+          if (inputValue[i] === lyrics[i]) correct++;
         }
-        setCompleted(true);
+        setCorrectChars(prev => prev + correct);
+        setTotalChars(prev => prev + lyrics.length);
+        setCpm(Math.round(chars.length / (timeTaken / 60000)));
+      }
+      setCompleted(true);
     }
   };
 
-  // 다시하기 버튼
   const handleRetry = () => {
     setInputValue("");
     setStartTime(null);
@@ -52,7 +49,6 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     setTotalChars(0);
   };
 
-  // 실시간 CPM 계산
   useEffect(() => {
     if (startTime === null || completed) return;
 
@@ -62,112 +58,83 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [startTime, inputValue, completed]);
-  
+  }, [startTime, totalTypedChars, completed]);
+
   useEffect(() => {
     setMounted(true);
     handleRetry();
   }, [lyrics]);
 
+  if (!mounted) return null;
+
   const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
   const totalLyricsChars = Hangul.disassemble(lyrics, true).flat().length;
 
   return (
-    <>
-      <Wrapper>
-        {completed && (
-          <ResultModal
-            lyrics = {lyrics}
-            accuracy={accuracy}
-            cpm={cpm}
-            onRetry={handleRetry}
-          />
-        )}
-         <ProgressBarContainer>
-          <ProgressBarFill progress={totalTypedChars / totalLyricsChars * 100} />
-        </ProgressBarContainer> 
-      <TypingLine>
-        <CurrentLine>
+    <div className="h-[370px] w-[--tpg-basic-width]">
+      {completed && (
+        <ResultModal
+          lyrics={lyrics}
+          accuracy={accuracy}
+          cpm={cpm}
+          onRetry={handleRetry}
+        />
+      )}
+
+      <div className="h-[2px] bg-[--progress-bg] mb-6">
+        <div
+          className="h-full bg-[--key-fill-red] transition-[width] duration-300 ease-out"
+          style={{ width: `${(totalTypedChars / totalLyricsChars) * 100}%` }}
+        />
+      </div>
+
+      <div className="min-h-[300px]">
+        <p className="mb-4 w-full text-[length:var(--typing-size)] leading-normal">
           {lyrics.split("").map((char, i) => {
             const typedChar = inputValue[i];
-            let color = "var(--color-basic)";
-            let textDecoration = "transparent";
+            let color = "text-[--color-basic]";
+            let textDecoration = "decoration-transparent";
 
             if (typedChar !== undefined) {
-              if (i === inputValue.length - 1) color = "black";
-              else {
-                color = typedChar === char ? "var(--color-correct)" : "var(--color-wrong)";
-                if (typedChar !== char) textDecoration = "underline";
+              if (i === inputValue.length - 1) {
+                color = "text-black";
+              } else {
+                if (typedChar === char) {
+                  color = "text-[--color-correct]";
+                } else {
+                  color = "text-[--color-wrong]";
+                  textDecoration = "underline decoration-[--color-wrong] underline-offset-1";
+                }
               }
             }
-            
+
             return (
-              <CharSpan key={i} style={{ color, textDecoration }}>
+              <span
+                key={i}
+                className={`transition-colors duration-100 text-[length:var(--typing-size)] ${color} ${textDecoration}`}
+                style={{ textUnderlinePosition: 'under' }}
+              >
                 {char}
-              </CharSpan>
+              </span>
             );
           })}
-        </CurrentLine>
-      </TypingLine>
-      <Input
+        </p>
+      </div>
+
+      <input
         type="text"
         value={inputValue}
-        spellCheck={false} // 맞춤법
+        spellCheck={false}
         disabled={completed}
         onChange={(e) => setInputValue(e.target.value)}
-        onPaste={(e) => {e.preventDefault()}} //붙여넣기 막기
-        onDrop={(e) => e.preventDefault()} // 드래그앤드롭막기
+        onPaste={(e) => e.preventDefault()}
+        onDrop={(e) => e.preventDefault()}
         onKeyDown={handleKeyDown}
         placeholder="여기에 입력하세요"
+        className="text-[length:var(--typing-size)] w-full outline-none select-none bg-inherit"
       />
-      </Wrapper>
-    </>
+    </div>
   );
 };
 
 export default TypingLocal;
-
-const TypingLine = styled.div`
-  min-height: 300px;
-`;
-
-const ProgressBarContainer = styled.div`
-  // width: 100%;
-  height: 2px;
-  background-color: var(--progress-bg);
-  margin-bottom: 1.5rem;
-`;
-
-const ProgressBarFill = styled.div<{ progress: number }>`
-  height: 100%;
-  background-color: var(--key-fill-red);
-  width: ${({ progress }) => progress}%;
-  transition: width 0.3s ease;
-`;
-
-
-const Wrapper = styled.div`
-  height : 370px;
-  width: var(--tpg-basic-width);
-
-`;
-
-const CurrentLine = styled.p`
-  margin-bottom: 1rem;
-  width: 100%;
-  font-size: var(--typing-size);
-`;
-
-const CharSpan = styled.span`
-  transition: color 0.1s;
-  font-size: var(--typing-size);
-  text-underline-position : under;
-`;
-
-const Input = styled.input`
-  font-size: var(--typing-size);
-  width: 100%;
-  outline: none;
-  user-select: none;  // 드래그 선택 막기
-  background:inherit;
-`;

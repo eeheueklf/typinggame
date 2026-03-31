@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import styled from "styled-components";
 import { Keys } from "@/types/key-item";
 
 interface KeyboardProps {
@@ -14,7 +13,6 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
-
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
@@ -22,7 +20,7 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
   };
 
   useEffect(() => {
-    setMounted(true)
+    setMounted(true);
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = document.querySelector(`.key--${e.code}`);
       if (key) key.classList.add("pressed");
@@ -42,105 +40,65 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
     };
   }, []);
 
-  if(!mounted) 
-    return <p>키보드 설정 불러오는 중...</p>
+  if (!mounted) return <p className="p-4">키보드 설정 불러오는 중...</p>;
 
   return (
-    <KeyboardFrame>
+    <div className="w-full">
       {keys.map((row, rowIndex) => (
-        <KeyboardWrapper key={rowIndex}>
+        <div key={rowIndex} className="flex w-full">
           {row.map(({ code, label, color, widthLevel, href }) => {
             const handleClick = () => {
               if (code === "CapsLock") onToggleSidebar?.();
               if (code === "Backspace") toggleTheme();
             };
 
+            // 가로 너비 로직
+            const widthClass = 
+              widthLevel === 3 ? "w-[120px] flex-grow-0" :
+              widthLevel === 2 ? "w-[90px] flex-grow-0" :
+              widthLevel === 1 ? "w-[70px] flex-grow-0" :
+              widthLevel === 0 ? "flex-grow" : "w-[50px] flex-grow-0";
+
+            // 배경색 및 테두리 로직
+            const colorClass = 
+              color === 'blue' ? "bg-[--key-fill-blue] text-white" :
+              color === 'red' ? "bg-[--key-fill-red] text-white" :
+              "bg-[--key-fill-default] text-black";
+
+            // 공통 스타일 (Hover, Pressed 효과 포함)
+            const commonClasses = `
+              h-[55px] m-[2px] text-[13px] rounded-[4px] flex justify-center items-start border border-black transition-all
+              hover:text-[--key-led-red] hover:bg-[--key-linked-pressed]
+              hover:shadow-[0_0_5px_1px] 
+              ${color === 'blue' ? 'hover:shadow-[--key-led-blue]' : 'hover:shadow-[--key-led-red]'}
+              [&.pressed]:text-[--key-led-red] [&.pressed]:bg-[--key-linked-pressed]
+              [&.pressed]:shadow-[0_0_5px_1px]
+              ${color === 'blue' ? '[&.pressed]:shadow-[--key-led-blue]' : '[&.pressed]:shadow-[--key-led-red]'}
+              ${widthClass} ${colorClass}
+            `;
+
             const keyElement = (
-              <Key
+              <div
                 key={code}
-                className={`key--${code}`}
-                $color={color}
-                $widthLevel={widthLevel}
+                className={`key--${code} ${commonClasses} cursor-pointer`}
                 onClick={handleClick}
               >
-                <KeyCap>{label}</KeyCap>
-              </Key>
+                <div className="w-[99%] h-[90%] p-[6px] leading-none">
+                  {label}
+                </div>
+              </div>
             );
 
             return href ? (
-              <Link href={href} key={code} passHref>
+              <Link href={href} key={code} className={widthLevel === 0 ? "flex-grow" : ""}>
                 {keyElement}
               </Link>
             ) : (
               keyElement
             );
           })}
-        </KeyboardWrapper>
+        </div>
       ))}
-    </KeyboardFrame>
+    </div>
   );
 }
-
-const KeyboardFrame = styled.div`
-  width:100%;
-`;
-const KeyboardWrapper = styled.div`
-  display:flex;
-  width:100%;
-`;
-
-
-
-const Key = styled.div<{
-  $widthLevel?: number;
-  $color?: 'blue' | 'red';
-}>`
-  height: 55px;
-  margin: 2px;
-  font-size : 13px;
-  border-radius: 4px;
-  display:flex;
-  justify-content:center;
-  align-items: flex-start;
-
-  width: ${({ $widthLevel }) =>
-    $widthLevel === 3 ? '120px' :
-    $widthLevel === 2 ? '90px' :
-    $widthLevel === 1 ? '70px' : '50px'};
-  flex-grow: ${({ $widthLevel }) => ($widthLevel === 0 ? 1 : 0)};
-  border-color: ${({ $color }) =>
-    $color === 'blue' ? 'var(--key-border-blue)' :
-    $color === 'red' ? 'var(--key-border-red)' :
-    'var(--key-border-default)'};
-  border : 1px solid black;
-  background-color: ${({ $color }) =>
-    $color === 'blue' ? 'var(--key-fill-blue)' :
-    $color === 'red' ? 'var(--key-fill-red)' :
-    'var(--key-fill-default)'};
-  color: ${({ $color }) => ($color ? 'white' : 'black')};
-  &:hover{
-    color: var(--key-pressed-text);
-    background-color: var(--key-linked-pressed);
-    box-shadow: 0 0 5px 1px ${({ $color }) =>
-      $color === 'blue' ? 'var(--key-led-blue)' :
-      $color === 'red' ? 'var(--key-led-red)' :
-      'var(--key-led-red)'};
-     color :  var(--key-led-red);
-  }
-  &.pressed {
-    color: var(--key-pressed-text);
-    background-color: var(--key-linked-pressed);
-    box-shadow: 0 0 5px 1px ${({ $color }) =>
-      $color === 'blue' ? 'var(--key-led-blue)' :
-      $color === 'red' ? 'var(--key-led-red)' :
-      'var(--key-led-red)'};
-     color :  var(--key-led-red);
-    }
-`;
-
-const KeyCap = styled.div`
-  width: 99%;
-  height: 90%;
-  padding: 6px;
-  line-height: 1;
-`;
