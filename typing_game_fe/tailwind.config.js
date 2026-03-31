@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,9 +10,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        nanum: ['NanumHumanBold', 'Helvetica', 'sans-serif'],
-        mont: ['Montserrat','Helvetica', 'sans-serif'],
-        liber: ['Libertinus','Helvetica', 'sans-serif'],
+        nanum: ['var(--font-nanum)', 'Helvetica', 'sans-serif'],
+        mont: ['var(--font-mont)','Helvetica', 'sans-serif'],
+        liber: ['var(--font-liber)','Helvetica', 'sans-serif'],
       },
       fontSize: {
         header: 'var(--tpg-header-font-size)',

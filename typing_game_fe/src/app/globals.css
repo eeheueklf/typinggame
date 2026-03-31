@@ -19,6 +19,7 @@
   src: url('/font/Montserrat-VariableFont_wght.ttf') format('truetype');
 }
 
+
 :root {
   --background : #F8F8F8;
   --foreground: #171717;
