@@ -9,6 +9,7 @@ import { LongText } from "@/types/long-text";
 import { useLongTexts } from "@/features/typing/long/hooks/useLongTexts";
 import { ItemContext } from "@/features/typing/long/components/ItemContext";
 
+
 const TypingPage: React.FC = () => {
   const { isLoggedIn } = useAuth();
   const lyricsList = useLongTexts();
