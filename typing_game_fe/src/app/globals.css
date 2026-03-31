@@ -123,3 +123,13 @@ body {
   font-family: NunumHuman, Helvetica, sans-serif;
 }
 
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}

@@ -17,9 +17,9 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
 
-  const totalTypedChars = useMemo(() =>
-    Hangul.disassemble(inputValue, true).flat().length,
-    [inputValue]);
+
+  const totalTypedChars = useMemo(() => 
+   Hangul.disassemble(inputValue, true).flat().length, [inputValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (startTime === null) setStartTime(Date.now());
