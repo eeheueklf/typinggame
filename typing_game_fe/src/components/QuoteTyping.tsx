@@ -11,6 +11,7 @@ interface TypingLocalProps {
 
 const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
+  const [mounted, setMounted] = useState(false); 
   const [inputValue, setInputValue] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [completed, setCompleted] = useState(false);
@@ -18,10 +19,10 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   
-  const totalTypedChars = () => 
-    Hangul.disassemble(inputValue, true).flat().length;
+  const totalTypedChars = React.useMemo(() => 
+    Hangul.disassemble(inputValue, true).flat().length, 
+  [inputValue]);
 
-  // 입력 이벤트
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (startTime === null) setStartTime(Date.now());
 
@@ -63,8 +64,9 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     return () => clearInterval(interval);
   }, [startTime, inputValue, completed]);
-
+  
   useEffect(() => {
+    setMounted(true);
     handleRetry();
   }, [lyrics]);
 
