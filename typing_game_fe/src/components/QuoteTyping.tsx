@@ -1,24 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import * as Hangul from "hangul-js";
 import ResultModal from "@/components/ResultModal";
 import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
-
-const SPRITE_DATA = {
-  normal: [
-  { start: 3.3, duration: 0.1 },
-  { start: 4.3, duration: 0.1 },
-  { start: 4.1, duration: 0.1 },
-  { start: 5.6, duration: 0.1 },
-  { start: 6.1, duration: 0.1 }, 
-  { start: 6.2, duration: 0.1 },
-  { start: 6.5, duration: 0.1 },
-  ],
-  space: { start: 11.5, duration: 0.4 },
-  backspace: { start: 13.0, duration: 0.1 },
-};
-
+import { calculateTotalChars, calculateCpm, calculateCorrectCount, calculateAccuracy} from "@/utils/typingUtils";
+import {AUDIO_SPRITE} from '@/constant/sprite'
 
 interface TypingLocalProps {
   lyrics: string;
@@ -54,6 +40,13 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     initAudio();
     setMounted(true);
+
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    };
   }, []);
 
   const playTypingSound = (type: 'normal' | 'space' | 'backspace' = 'normal') => {
@@ -65,10 +58,10 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     let sprite;
     if (type === 'normal') {
-      const normalSprites = SPRITE_DATA.normal;
+      const normalSprites = AUDIO_SPRITE.normal;
       sprite = normalSprites[Math.floor(Math.random() * normalSprites.length)];
     } else {
-      sprite = SPRITE_DATA[type];
+      sprite = AUDIO_SPRITE[type];
     }
 
     const source = context.createBufferSource();
@@ -81,8 +74,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     source.start(0, sprite.start, sprite.duration);
   };
 
-  const totalTypedChars = useMemo(() => 
-   Hangul.disassemble(inputValue, true).flat().length, [inputValue]);
+  const totalTypedChars = useMemo(() => calculateTotalChars(inputValue), [inputValue]);
 
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -96,15 +88,10 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     if (e.key === "Enter" && inputValue.length === lyrics.length) {
       if (startTime !== null) {
-        const timeTaken = Date.now() - startTime;
-        const chars = Hangul.disassemble(inputValue, true).flat();
-        let correct = 0;
-        for (let i = 0; i < lyrics.length; i++) {
-          if (inputValue[i] === lyrics[i]) correct++;
-        }
+        const correct = calculateCorrectCount(inputValue, lyrics)
         setCorrectChars(prev => prev + correct);
         setTotalChars(prev => prev + lyrics.length);
-        setCpm(Math.round(chars.length / (timeTaken / 60000)));
+        setCpm(calculateCpm(calculateTotalChars(inputValue), startTime));
       }
       setCompleted(true);
     }
@@ -133,8 +120,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     if (startTime === null || completed) return;
 
     const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      setCpm(Math.round(totalTypedChars / (elapsed / 60000)));
+      setCpm(calculateCpm(totalTypedChars, startTime));
     }, 100);
 
     return () => clearInterval(interval);
@@ -149,8 +135,8 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     return <QuoteSkeleton />; 
   }
 
-  const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
-  const totalLyricsChars = Hangul.disassemble(lyrics, true).flat().length;
+  const accuracy = calculateAccuracy(correctChars, totalChars);
+  const totalLyricsChars = calculateTotalChars(lyrics);
 
   return (
     <div className="h-[370px] w-[--tpg-basic-width] ">
