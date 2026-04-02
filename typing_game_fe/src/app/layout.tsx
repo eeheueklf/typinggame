@@ -26,7 +26,7 @@ const libertinus = localFont({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={`${montserrat.variable} ${nanumHuman.variable} ${libertinus.variable}`}>
-      <body className="flex flex-col h-screen overflow-hidden">
+      <body className="flex flex-col h-screen overflow-hidden font-nanum">
         <NavHeader />
         <main className="flex-1 flex items-center justify-center w-full relative">
           {children}

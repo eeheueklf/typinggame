@@ -1,7 +1,11 @@
 import keys from '@/features/keyboard/keys'
 import QuoteTyping from "@/components/QuoteTyping";
 import Keyboard from '@/features/keyboard/Keyboard';
-import {QUOTES} from '@/constant/quotes'
+import { QUOTES } from '@/constant/quotes'
+import { Suspense } from "react";
+import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
+import KeyboardSkeleton from "@/components/Skeleton/KeyboardSkeleton";
+
 export default function Home() {
 
   const today = new Date();
@@ -20,8 +24,12 @@ export default function Home() {
           - {quote.author}
         </h1>
       </div>
-      <QuoteTyping lyrics={quote.content} />
-      <Keyboard keys={keys} />
+      <Suspense fallback={<QuoteSkeleton />}>
+        <QuoteTyping lyrics={quote.content} />
+      </Suspense>
+      <Suspense fallback={<KeyboardSkeleton />}>
+        <Keyboard keys={keys} />
+      </Suspense>
     </div>
   );
 }

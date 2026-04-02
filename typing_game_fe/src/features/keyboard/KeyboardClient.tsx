@@ -40,8 +40,6 @@ export default function KeyboardClient({ keys, onToggleSidebar }: KeyboardProps)
     };
   }, []);
 
-  if (!mounted) return null;
-
   return (
     <div className="w-full">
       {keys.map((row, rowIndex) => (

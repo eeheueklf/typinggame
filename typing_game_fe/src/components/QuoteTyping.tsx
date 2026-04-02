@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as Hangul from "hangul-js";
 import ResultModal from "@/components/ResultModal";
+import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
 
 const SPRITE_DATA = {
   normal: [
@@ -83,6 +84,7 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
   const totalTypedChars = useMemo(() => 
    Hangul.disassemble(inputValue, true).flat().length, [inputValue]);
 
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (startTime === null) setStartTime(Date.now());
 
@@ -143,7 +145,9 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     handleRetry();
   }, [lyrics]);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return <QuoteSkeleton />; 
+  }
 
   const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
   const totalLyricsChars = Hangul.disassemble(lyrics, true).flat().length;
