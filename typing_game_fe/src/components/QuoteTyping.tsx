@@ -149,11 +149,22 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
         />
       )}
 
-      <div className="h-[2px] bg-[--progress-bg] mb-6">
+      <div className="h-[2px] bg-[--progress-bg] mb-2">
         <div
           className="h-full bg-[--key-fill-red] transition-[width] duration-300 ease-out"
           style={{ width: `${(totalTypedChars / totalLyricsChars) * 100}%` }}
         />
+      </div>
+
+      <div className="flex justify-between items-end mb-2">
+        <div className="flex items-baseline gap-1">
+          <span className="text-xs text-[--color-basic] font-medium tracking-tighter">
+            {cpm}CPM
+          </span>
+        </div>
+        <div className="text-xs text-[--color-basic] opacity-60">
+          {totalTypedChars} / {totalLyricsChars} 자
+        </div>
       </div>
 
       <div className="min-h-[300px] w-full flex flex-col overflow-hidden">
