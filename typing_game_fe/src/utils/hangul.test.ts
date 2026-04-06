@@ -19,14 +19,12 @@ describe('타이핑 시스템 핵심 로직 검증 (Unit Test)', () => {
 
   describe('calculateCpm  (분당 타수 계산)', () => {
     test('1분(60000ms) 동안 100자', () => {
-      const startTime = Date.now() - 60000;
-      const result = calculateCpm(100, startTime);
+      const result = calculateCpm(100, 60000);
       expect(result).toBe(100);
     });
 
     test('2분(120000ms) 동안 1000자', () => {
-      const startTime = Date.now() - 120000;
-      const result = calculateCpm(1000, startTime);
+      const result = calculateCpm(1000, 120000);
       expect(result).toBe(500);
     });
   });

@@ -6,8 +6,7 @@ export const calculateTotalChars = (text: string): number => {
 };
 
 // cpm 계산
-export const calculateCpm = (totalChars: number, startTime: number): number => {
-  const timeTaken = Date.now() - startTime;
+export const calculateCpm = (totalChars: number, timeTaken: number): number => {
   if (timeTaken <= 0) return 0;
   return Math.round(totalChars / (timeTaken / 60000));
 };

@@ -88,10 +88,11 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
 
     if (e.key === "Enter" && inputValue.length === lyrics.length) {
       if (startTime !== null) {
-        const correct = calculateCorrectCount(inputValue, lyrics)
+        const correct = calculateCorrectCount(inputValue, lyrics);
+        const timeTaken = Date.now() - startTime;
         setCorrectChars(prev => prev + correct);
         setTotalChars(prev => prev + lyrics.length);
-        setCpm(calculateCpm(calculateTotalChars(inputValue), startTime));
+        setCpm(calculateCpm(calculateTotalChars(inputValue), timeTaken));
       }
       setCompleted(true);
     }
@@ -120,7 +121,8 @@ const TypingLocal: React.FC<TypingLocalProps> = ({ lyrics }) => {
     if (startTime === null || completed) return;
 
     const interval = setInterval(() => {
-      setCpm(calculateCpm(totalTypedChars, startTime));
+      const timeTaken = Date.now() - startTime;
+      setCpm(calculateCpm(totalTypedChars, timeTaken));
     }, 100);
 
     return () => clearInterval(interval);
