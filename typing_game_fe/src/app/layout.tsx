@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/app/globals.css";
 import NavHeader from "@/components/NavHeader";
 
 import localFont from 'next/font/local';

@@ -1,10 +1,6 @@
 import keys from '@/components/keyboard/keys'
-import QuoteTyping from "@/features/typing/QuoteTyping";
 import Keyboard from '@/components/keyboard/Keyboard';
 import { QUOTES } from '@/constant/quotes'
-import { Suspense } from "react";
-import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
-import KeyboardSkeleton from "@/components/Skeleton/KeyboardSkeleton";
 import TypingLayout from '@/components/typing/layout';
 import Typing from '@/components/typing/index'
 export default function Home() {

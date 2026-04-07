@@ -127,8 +127,8 @@ const TypingCore: React.FC<TypingCoreProps> = ({ mode, data, longTextId, isUserF
           accuracy={accuracy}
           cpm={stats.cpm}
           onRetry={handleRetry}
-          longTextId={longTextId}
-          isUserFile={isUserFile}
+          // longTextId={}
+          // isUserFile={isUserFile}
         />
       )}
 
