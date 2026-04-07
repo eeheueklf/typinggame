@@ -4,7 +4,11 @@ import typingKeys from "@/components/keyboard/typingKeys";
 import Keyboard from "@/components/keyboard/Keyboard";
 import { WORD_POOL } from "@/constant/wordpool";
 
-
+export const TyleKeyLogo = () => (
+  <div className="w-14 h-14 bg-[--key-fill-default] border-2 border-black rounded-lg flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8 transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none cursor-default">
+    <span className="text-3xl font-black text-black">T</span>
+  </div>
+);
 const TyleLogo = () => (
   <svg 
     width="64" 
@@ -14,10 +18,8 @@ const TyleLogo = () => (
     xmlns="http://www.w3.org/2000/svg"
     className="mb-6 shadow-xl shadow-black/20 rounded-2xl"
   >
-    {/* 배경 사각형 */}
     <rect width="64" height="64" rx="16" fill="black" />
     
-    {/* 글자 T (Path로 그려서 폰트 의존성 제거) */}
     <path 
       d="M20 20H44V26H35V44H29V26H20V20Z" 
       fill="white" 
@@ -31,7 +33,7 @@ interface GameWord {
   isCleared: boolean;
 }
 
-const GAME_TIME = 1;
+const GAME_TIME = 30;
 
 const TypingGame: React.FC = () => {
   const [words, setWords] = useState<GameWord[]>([]);
@@ -102,36 +104,32 @@ const TypingGame: React.FC = () => {
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center transition-all duration-500">
             {timeLeft === 0 ? (
               <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 border border-gray-100">
-                   <span className="text-3xl">🏆</span>
-                </div>
                 <span className="text-gray-400 text-sm mb-2 font-semibold tracking-widest uppercase">Result</span>
                 <h2 className="text-6xl font-black mb-4 text-black tracking-tighter">
                   {score} <span className="text-2xl font-bold text-gray-400">pts</span>
                 </h2>
                 <p className="text-gray-500 mb-10 text-center leading-relaxed">
-                  멋진 실력입니다!<br/>기록을 이미지로 저장해 보세요.
+                  멋진 실력입니다!
                 </p>
               </div>
             ) : (
               <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <div className="font-liber font-bold text-2xl">GAME</div>
+                <TyleKeyLogo/>
                 <p className="text-gray-400 mb-10 font-light text-center leading-relaxed">
                   30초의 제한 시간 동안<br/>
                   최대한 많은 단어를 입력하세요.
                 </p>
               </div>
             )}
-            <div className="text-black font-liber font-bold text-2xl">START</div>
 
-            <button 
-              onClick={initGame}
-              className="group relative px-14 py-5 bg-black text-white rounded-2xl text-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20"
-            >
-              <span className="relative z-10 font-liber font-bold text-2xl">
-                {timeLeft === GAME_TIME ? "START" : "다시 도전하기"}
-              </span>
-            </button>
+          <button 
+            onClick={initGame}
+            className="group relative px-10 py-3.5 bg-black text-white rounded-xl text-lg font-bold transition-all active:scale-95 shadow-lg shadow-black/10"
+          >
+            <span className="relative z-10 font-bold text-lg tracking-tight">
+              {timeLeft === GAME_TIME ? "START" : "다시 도전하기"}
+            </span>
+          </button>
           </div>
         )}
 
@@ -174,7 +172,7 @@ const TypingGame: React.FC = () => {
         <div className="flex-grow-[100] invisible" />
         </div>
 
-        <div className="mt-auto w-full border-t border-gray-100 pt-3">
+        <div className="mt-auto w-full pt-3">
         <input
             ref={inputRef}
             type="text"
