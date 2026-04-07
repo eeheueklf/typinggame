@@ -26,7 +26,7 @@ TYLE은 단순한 타자 연습을 넘어, 엄선된 글귀와 다채로운 콘�
 
 | 오늘의 글 | 긴 글 연습 | 타자게임 | 이미지 저장 및 공유 |
 | :---: | :---: | :---: | :---: |
-|<img width="300" height="906" alt="image" src="https://github.com/user-attachments/assets/5cc3c2ef-47ef-4e77-898a-8634abf92927" /> | <img width="300" alt="image" src="https://github.com/user-attachments/assets/35bb26bc-ad5e-4f92-84f7-702d00c14195" /> | <img width="300"  alt="image" src="https://github.com/user-attachments/assets/4ac66cea-a1b4-439c-86e1-d2ca4db23f65" /> | <img width="300" alt="image" src="https://github.com/user-attachments/assets/754e7e13-c33d-42ac-94f6-ded0be18df63" /> |
+|<img width="300" height="906" alt="image" src="https://github.com/user-attachments/assets/5cc3c2ef-47ef-4e77-898a-8634abf92927" /> | <img width="300" alt="image" src="https://github.com/user-attachments/assets/35bb26bc-ad5e-4f92-84f7-702d00c14195" /> | <img width="300" alt="image" src="https://github.com/user-attachments/assets/88b92f14-b0b9-4b73-bb5d-062fb8442d3c" /> | <img width="300" alt="image" src="https://github.com/user-attachments/assets/754e7e13-c33d-42ac-94f6-ded0be18df63" /> |
 | 매일 바뀌는 문장으로 새롭게 연습 | 긴 글을 끝까지 연습 | 30초 동안 화면에 나타나는 단어들을 빠르게 입력하는 게임 | 점수를 기록 카드 이미지로 생성 |
 
 
