@@ -68,7 +68,6 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-weight: bold;
   margin-bottom: 0.5rem;
 `;
 

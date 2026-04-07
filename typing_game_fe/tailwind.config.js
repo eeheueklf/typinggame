@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        nanum: ['var(--font-nanum)', 'Helvetica', 'sans-serif'],
+        sans: ['var(--font-pretendard)', 'Pretendard'],
         mont: ['var(--font-mont)','Helvetica', 'sans-serif'],
         liber: ['var(--font-liber)','Helvetica', 'sans-serif'],
       },
