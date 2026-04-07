@@ -1,8 +1,12 @@
-// app/layout.tsx
 import "./globals.css";
-import NavHeader from "@/components/NavHeader";
+import NavHeader from "@/features/NavHeader";
 
 import localFont from 'next/font/local';
+const pretendard = localFont({
+  src: '../../public/font/PretendardVariable.woff2',
+  display: 'swap',
+  variable: '--font-pretendard',
+});
 
 const montserrat = localFont({
   src: '../../public/font/Montserrat-VariableFont_wght.ttf',
@@ -10,11 +14,6 @@ const montserrat = localFont({
   variable: '--font-mont',
 });
 
-const nanumHuman = localFont({
-  src: '../../public/font/NanumHumanRegular.woff',
-  display: 'swap',
-  variable: '--font-nanum',
-});
 
 const libertinus = localFont({
   src: '../../public/font/LibertinusKeyboard-Regular.ttf',
@@ -25,8 +24,8 @@ const libertinus = localFont({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${montserrat.variable} ${nanumHuman.variable} ${libertinus.variable}`}>
-      <body className="flex flex-col h-screen overflow-hidden font-nanum">
+    <html lang="ko" className={`${pretendard.variable} ${montserrat.variable} ${libertinus.variable}`}>
+      <body className="font-pretendard flex flex-col h-screen overflow-hidden">
         <NavHeader />
         <main className="flex-1 flex items-center justify-center w-full relative">
           {children}

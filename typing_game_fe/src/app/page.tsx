@@ -1,11 +1,12 @@
 import keys from '@/features/keyboard/keys'
-import QuoteTyping from "@/components/QuoteTyping";
+import QuoteTyping from "@/features/typing/QuoteTyping";
 import Keyboard from '@/features/keyboard/Keyboard';
 import { QUOTES } from '@/constant/quotes'
 import { Suspense } from "react";
-import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
-import KeyboardSkeleton from "@/components/Skeleton/KeyboardSkeleton";
-
+import QuoteSkeleton from "@/features/Skeleton/QuoteSkeleton";
+import KeyboardSkeleton from "@/features/Skeleton/KeyboardSkeleton";
+import TypingLayout from '@/features/typing/layout';
+import Typing from '@/features/typing/index'
 export default function Home() {
 
   const today = new Date();
@@ -14,22 +15,15 @@ export default function Home() {
   const quote = QUOTES[index];
 
   return (
-    <div className="flex flex-col ">
-
-      <div className="flex justify-between w-full px-[2px] text-header">
-        <h1 className="font-nanum mb-2">
-        오늘의 문장
-        </h1>
-        <h1 className="font-nanum mb-2">
-          - {quote.author}
-        </h1>
-      </div>
-      <Suspense fallback={<QuoteSkeleton />}>
-        <QuoteTyping lyrics={quote.content} />
-      </Suspense>
-      <Suspense fallback={<KeyboardSkeleton />}>
-        <Keyboard keys={keys} />
-      </Suspense>
-    </div>
+    <TypingLayout
+      title="오늘의 문장"
+      subTitle={`- ${quote.author}`}
+      keyboard={<Keyboard keys={keys} />}
+    >
+      <Typing 
+        mode="short" 
+        data={[quote.content]} 
+      />
+    </TypingLayout>
   );
 }
