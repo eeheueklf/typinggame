@@ -5,13 +5,33 @@ import Keyboard from "@/components/keyboard/Keyboard";
 import { WORD_POOL } from "@/constant/wordpool";
 
 
+const TyleLogo = () => (
+  <svg 
+    width="64" 
+    height="64" 
+    viewBox="0 0 64 64" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className="mb-6 shadow-xl shadow-black/20 rounded-2xl"
+  >
+    {/* 배경 사각형 */}
+    <rect width="64" height="64" rx="16" fill="black" />
+    
+    {/* 글자 T (Path로 그려서 폰트 의존성 제거) */}
+    <path 
+      d="M20 20H44V26H35V44H29V26H20V20Z" 
+      fill="white" 
+    />
+  </svg>
+);
+
 interface GameWord {
   id: number;
   text: string;
   isCleared: boolean;
 }
 
-const GAME_TIME = 30;
+const GAME_TIME = 1;
 
 const TypingGame: React.FC = () => {
   const [words, setWords] = useState<GameWord[]>([]);
@@ -26,7 +46,7 @@ const TypingGame: React.FC = () => {
 
   const initGame = () => {
     const shuffledPool = [...WORD_POOL].sort(() => Math.random() - 0.5);
-    const gameWordsCount = Math.min(WORD_POOL.length, 200);
+    const gameWordsCount = Math.min(WORD_POOL.length, 100);
     
     const initialWords = shuffledPool.slice(0, gameWordsCount).map((word, i) => ({
       id: i,
@@ -76,64 +96,63 @@ const TypingGame: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-[--tpg-basic-width] font-pretendard">
-      {/* Game Header */}
-      <div className="w-full flex justify-between mb-4">
-        <div className="flex flex-col">
-          <span className="text-[0.8rem] text-gray-500">Time</span>
-          <strong className={`text-2xl font-bold ${timeLeft <= 10 ? "text-red-500" : "text-black"}`}>
-            {timeLeft}s
-          </strong>
-        </div>
-        <div className="flex flex-col items-end">
-          <span className="text-[0.8rem] text-gray-500">Score</span>
-          <strong className="text-2xl font-bold text-black">{score}</strong>
-        </div>
-      </div>
-
-      <div className="relative w-full h-[20rem] overflow-hidden flex flex-col">
+    <div className="min-h-screen flex items-center justify-center p-4 font-pretendard bg-gray-50/30">
+      <div className="relative w-[600px] h-[560px] flex-shrink-0 flex flex-col rounded-[2.5rem] overflow-hidden p-10 transition-none">
         {!isGameActive && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-md transition-all duration-500">
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center transition-all duration-500">
             {timeLeft === 0 ? (
-              // 종료 화면
-              <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
-                <span className="text-gray-400 text-sm mb-1 font-medium">GAME OVER</span>
-                <h2 className="text-5xl font-black mb-2 text-black tracking-tighter">
-                  {score} <span className="text-xl font-bold text-gray-600">Points</span>
+              <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 border border-gray-100">
+                   <span className="text-3xl">🏆</span>
+                </div>
+                <span className="text-gray-400 text-sm mb-2 font-semibold tracking-widest uppercase">Result</span>
+                <h2 className="text-6xl font-black mb-4 text-black tracking-tighter">
+                  {score} <span className="text-2xl font-bold text-gray-400">pts</span>
                 </h2>
-                <p className="text-gray-500 mb-8 text-sm text-center">
-                  정말 멋진 실력이네요!<br/>기록을 경신해볼까요?
+                <p className="text-gray-500 mb-10 text-center leading-relaxed">
+                  멋진 실력입니다!<br/>기록을 이미지로 저장해 보세요.
                 </p>
               </div>
             ) : (
-              // 시작 화면
-              <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-black/20">
-                  <span className="text-white text-3xl font-bold">T</span>
-                </div>
-                <h1 className="text-3xl font-black mb-2 tracking-tight text-black text-center">TYLE Typing Practice</h1>
-                <p className="text-gray-500 mb-8 text-sm font-light text-center">
-                  30초 동안 얼마나 많은 단어를 타이핑할 수 있나요?<br/>
-                  엔터키를 눌러 단어를 제출하세요.
+              <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+                <div className="font-liber font-bold text-2xl">GAME</div>
+                <p className="text-gray-400 mb-10 font-light text-center leading-relaxed">
+                  30초의 제한 시간 동안<br/>
+                  최대한 많은 단어를 입력하세요.
                 </p>
               </div>
             )}
-            
+            <div className="text-black font-liber font-bold text-2xl">START</div>
+
             <button 
               onClick={initGame}
-              className="group relative px-12 py-4 bg-black text-white rounded-2xl text-lg font-bold overflow-hidden transition-all hover:pr-14 active:scale-95 shadow-2xl shadow-black/10"
+              className="group relative px-14 py-5 bg-black text-white rounded-2xl text-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20"
             >
-              <span className="relative z-10">
-                {timeLeft === GAME_TIME ? "Challenge Start" : "Try Again"}
+              <span className="relative z-10 font-liber font-bold text-2xl">
+                {timeLeft === GAME_TIME ? "START" : "다시 도전하기"}
               </span>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">
-                →
-              </div>
             </button>
           </div>
         )}
 
-        <div className="flex flex-wrap gap-1 justify-start content-start flex-1 w-full">
+        <div className={`flex flex-col transition-all duration-700 ${!isGameActive ? "blur-md opacity-20 scale-95" : "blur-0 opacity-100 scale-100"}`}>
+          {/* Header: 정보 가독성 강화 */}
+          <div className="flex justify-between items-end mb-12">
+            <div className="space-y-1">
+              <p className="text-[0.7rem] uppercase tracking-[0.2em] text-gray-400 font-bold">Time Remaining</p>
+              <p className={`text-4xl font-black tabular-nums ${timeLeft <= 10 ? "text-red-500 animate-pulse" : "text-black"}`}>
+                {timeLeft}<span className="text-xl ml-1">s</span>
+              </p>
+            </div>
+            <div className="text-right space-y-1">
+              <p className="text-[0.7rem] uppercase tracking-[0.2em] text-gray-400 font-bold">Current Score</p>
+              <p className="text-4xl font-black tabular-nums text-black">{score}</p>
+            </div>
+          </div>
+
+        {/* 단어장 */}
+        <div className="flex flex-wrap gap-1 justify-center content-start">
+
         {words.map((word) => {
             const isMatching = !word.isCleared && inputValue && word.text.startsWith(inputValue);
             return (
@@ -151,7 +170,7 @@ const TypingGame: React.FC = () => {
             </div>
             );
         })}
-        
+  
         <div className="flex-grow-[100] invisible" />
         </div>
 
@@ -171,12 +190,10 @@ const TypingGame: React.FC = () => {
             className="w-full bg-transparent text-center text-xl font-bold text-black placeholder-gray-300 outline-none"
         />
         </div>
+        </div>
         
       </div>
 
-      <div className="mt-8">
-        <Keyboard keys={typingKeys} />
-      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 import NavHeader from "@/components/NavHeader";
+import config from "../../typinggame.config.js";
 
 import localFont from 'next/font/local';
 const pretendard = localFont({
@@ -21,6 +22,14 @@ const libertinus = localFont({
   variable: '--font-liber',
 });
 
+
+export const metadata = {
+  title: config.title,      
+  description: config.tagline, 
+  icons: {
+    icon: config.favicon,   
+  },
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

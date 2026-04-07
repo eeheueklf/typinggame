@@ -1,7 +1,7 @@
 const config = {
-    title: "typing-game",
+    title: "TYLE",
     tagline: "타자연습",
-    favicon: 'favicon.ico'
+    favicon: 'icon.svg'
 }
 
 export default config;
