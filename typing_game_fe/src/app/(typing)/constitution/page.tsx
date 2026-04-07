@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Keyboard from "@/features/keyboard/Keyboard";
-import typingKeys from "@/features/keyboard/typingKeys";
+import Keyboard from "@/components/keyboard/Keyboard";
+import typingKeys from "@/components/keyboard/typingKeys";
 import { Constitution } from '@/types/constitution'
 import { useConstitution } from "@/features/typing/constitution/useConstitution";
-import Typing from "@/features/typing/constitution/components/Typing"
+import Typing from "@/components/typing/constitution/Typing"
 
 const ConstitutionTyping: React.FC = () => {
 

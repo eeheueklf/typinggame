@@ -1,5 +1,5 @@
 import "./globals.css";
-import NavHeader from "@/features/NavHeader";
+import NavHeader from "@/components/NavHeader";
 
 import localFont from 'next/font/local';
 const pretendard = localFont({

@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
-import ProfileEditMenu from "@/features/auth/profile/components/ProfileEditMenu";
+import { useAuth } from "@/features/auth/useAuth";
+import ProfileEditMenu from "@/components/auth/profile/ProfileEditMenu";
 
 export default function ProfileEdit() {
   const { username } = useAuth();

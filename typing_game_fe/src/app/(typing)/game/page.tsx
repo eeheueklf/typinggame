@@ -1,197 +1,184 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import typingKeys from "@/features/keyboard/typingKeys";
-import styled from "styled-components";
-import Keyboard from "@/features/keyboard/Keyboard";
+import typingKeys from "@/components/keyboard/typingKeys";
+import Keyboard from "@/components/keyboard/Keyboard";
+import { WORD_POOL } from "@/constant/wordpool";
 
-//TODO : words 받아오기, 난이도별 설정
-const WORDS = [
-  "사과","바나나","컴퓨터","타자","게임","연습","산성비",
-  "코딩","강아지","고양이","학교","책상","연필","공부","친구",
-  "자동차","자전거","노트북","스마트폰","음악",
-];
 
-interface FallingChar {
-  char: string;
-  x: number;
-  y: number;
+interface GameWord {
+  id: number;
+  text: string;
+  isCleared: boolean;
 }
-interface WordProps {
-  x: number;
-  y: number;
-  color: string;
-}
+
+const GAME_TIME = 30;
 
 const TypingGame: React.FC = () => {
-  const [fallingChars, setFallingChars] = useState<FallingChar[]>([]);
+  const [words, setWords] = useState<GameWord[]>([]);
   const [score, setScore] = useState(0);
-  const [isGameStarted, setGameStarted] = useState(false);
-  const [isComposing, setIsComposing] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(GAME_TIME);
+  const [isGameActive, setIsGameActive] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const generateRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const dropRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(()=>{
-    const handleVisibilityChange = () => {
-      if (document.hidden && isGameStarted) {
-        //다른창으로가면 게임종료
-        endGame();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+  const initGame = () => {
+    const shuffledPool = [...WORD_POOL].sort(() => Math.random() - 0.5);
+    const gameWordsCount = Math.min(WORD_POOL.length, 200);
+    
+    const initialWords = shuffledPool.slice(0, gameWordsCount).map((word, i) => ({
+      id: i,
+      text: word,
+      isCleared: false,
+    }));
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [isGameStarted]);
-
-  const startGame = () => {
-    setGameStarted(true);
+    setWords(initialWords);
     setScore(0);
-    setFallingChars([]);
-
-    if (generateRef.current) clearInterval(generateRef.current);
-    if (dropRef.current) clearInterval(dropRef.current);
-
-    generateRef.current = setInterval(() => {
-      const word = WORDS[Math.floor(Math.random() * WORDS.length)];
-      const x = Math.random() * 430;
-      setFallingChars(prev => [...prev, { char: word, x, y: 0 }]);
-    }, 1500);
-    //1.5초마다 단어 생성
-
-    dropRef.current = setInterval(() => {
-      setFallingChars(prev => 
-        prev
-          .map(c => ({ ...c, y: c.y + 3 }))
-          .filter(c => {
-            if (c.y > 460) {
-              endGame();
-              return false;
-            }
-            return true;
-          })
-      );
-    }, 30);
-    //0.3초마다 y좌표 증가
+    setTimeLeft(GAME_TIME);
+    setIsGameActive(true);
+    setInputValue("");
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
-  // 게임 종료
-  const endGame = () => {
-    setGameStarted(false);
-    if (generateRef.current) clearInterval(generateRef.current);
-    if (dropRef.current) clearInterval(dropRef.current);
-    generateRef.current = null;
-    dropRef.current = null;
-  };
+  useEffect(() => {
+    if (isGameActive && timeLeft > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setIsGameActive(false);
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [isGameActive, timeLeft]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (isComposing) return;
-    if (e.key === "Enter") {
-      if (!inputValue) return;
 
-      setFallingChars(prev => {
-        const matched = prev.find(c => c.char === inputValue);
-        if (matched) {
-          //글자수만큼점수
-          setScore(s => s + inputValue.length);
-          setInputValue(""); 
-          console.log(inputValue.length)
-          return prev.filter(c => c !== matched);
-        }
-        return prev;
-      });
+    if (e.key === "Enter") {
+      const trimmedInput = inputValue.trim();
+      if (!trimmedInput) return;
+
+      const targetIndex = words.findIndex(w => !w.isCleared && w.text === trimmedInput);
+
+      if (targetIndex !== -1) {
+        const newWords = [...words];
+        newWords[targetIndex].isCleared = true;
+        setWords(newWords);
+        setScore((prev) => prev + 1); 
+        setInputValue("");
+      } else {
+        setInputValue("");
+      }
     }
   };
 
   return (
-    <Box>
-      <GameContainer>
-        {!isGameStarted && <StartBtn onClick={startGame}>시작하기</StartBtn>}
-        {fallingChars.map((c, i) => (
-          <Word
-            key={i} x={c.x} y={c.y}
-            color={inputValue && c.char.startsWith(inputValue) ? "green" : "red"}
-          >{c.char}
-          </Word>
-        ))}
-        <Input
-          type="text"          
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}           
-          ref={inputRef}
-          disabled={!isGameStarted}
-          autoFocus
-          spellCheck={false}
-          onPaste={(e) => {e.preventDefault()}}
-          onDrop={(e) => e.preventDefault()}
-          placeholder="단어를 입력하세요"
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={() => setIsComposing(false)}
-        />
-        <ScoreBoard>점수: {score}</ScoreBoard>
-      </GameContainer>
-      <Keyboard keys={typingKeys} />
-    </Box>
-  );
-}
+    <div className="flex flex-col items-center w-[--tpg-basic-width] font-pretendard">
+      {/* Game Header */}
+      <div className="w-full flex justify-between mb-4">
+        <div className="flex flex-col">
+          <span className="text-[0.8rem] text-gray-500">Time</span>
+          <strong className={`text-2xl font-bold ${timeLeft <= 10 ? "text-red-500" : "text-black"}`}>
+            {timeLeft}s
+          </strong>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-[0.8rem] text-gray-500">Score</span>
+          <strong className="text-2xl font-bold text-black">{score}</strong>
+        </div>
+      </div>
 
+      <div className="relative w-full h-[20rem] overflow-hidden flex flex-col">
+        {!isGameActive && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-md transition-all duration-500">
+            {timeLeft === 0 ? (
+              // 종료 화면
+              <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                <span className="text-gray-400 text-sm mb-1 font-medium">GAME OVER</span>
+                <h2 className="text-5xl font-black mb-2 text-black tracking-tighter">
+                  {score} <span className="text-xl font-bold text-gray-600">Points</span>
+                </h2>
+                <p className="text-gray-500 mb-8 text-sm text-center">
+                  정말 멋진 실력이네요!<br/>기록을 경신해볼까요?
+                </p>
+              </div>
+            ) : (
+              // 시작 화면
+              <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-black/20">
+                  <span className="text-white text-3xl font-bold">T</span>
+                </div>
+                <h1 className="text-3xl font-black mb-2 tracking-tight text-black text-center">TYLE Typing Practice</h1>
+                <p className="text-gray-500 mb-8 text-sm font-light text-center">
+                  30초 동안 얼마나 많은 단어를 타이핑할 수 있나요?<br/>
+                  엔터키를 눌러 단어를 제출하세요.
+                </p>
+              </div>
+            )}
+            
+            <button 
+              onClick={initGame}
+              className="group relative px-12 py-4 bg-black text-white rounded-2xl text-lg font-bold overflow-hidden transition-all hover:pr-14 active:scale-95 shadow-2xl shadow-black/10"
+            >
+              <span className="relative z-10">
+                {timeLeft === GAME_TIME ? "Challenge Start" : "Try Again"}
+              </span>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">
+                →
+              </div>
+            </button>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-1 justify-start content-start flex-1 w-full">
+        {words.map((word) => {
+            const isMatching = !word.isCleared && inputValue && word.text.startsWith(inputValue);
+            return (
+            <div 
+                key={word.id} 
+                className={`
+                flex-grow text-center text-[1.1rem] 
+                transition-all duration-200 pointer-events-none
+                
+                ${word.isCleared ? "opacity-0 scale-75" : "opacity-100 scale-100"}
+                ${isMatching ? "text-blue-500 font-bold border-blue-500" : "text-gray-800 border-transparent"}
+                `}
+            >
+                {word.text}
+            </div>
+            );
+        })}
+        
+        <div className="flex-grow-[100] invisible" />
+        </div>
+
+        <div className="mt-auto w-full border-t border-gray-100 pt-3">
+        <input
+            ref={inputRef}
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={!isGameActive}
+            placeholder={isGameActive ? "이곳에 입력하세요..." : ""}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            spellCheck={false}
+            autoFocus
+            className="w-full bg-transparent text-center text-xl font-bold text-black placeholder-gray-300 outline-none"
+        />
+        </div>
+        
+      </div>
+
+      <div className="mt-8">
+        <Keyboard keys={typingKeys} />
+      </div>
+    </div>
+  );
+};
 
 export default TypingGame;
-
-const Box = styled.div`
-  position: relative;
-  align-items: center;
-`;
-
-const GameContainer = styled.div`
-  width: 100%;
-  height: 30rem;
-  // border: 2px solid black;
-  position: relative;
-  overflow: hidden;
-  margin: 0 auto;
-`
-
-const StartBtn = styled.button`
- position: absolute; 
-  top: 50%;
-  left : 50%;
-  transform: translate(-50%, -50%);
-  width : 10rem;
-  height : 3rem;
-  cursor: pointer;
-  font-size:30px;
-  font-weight:bold;
-  color:red;
-`
-
-
-const Word = styled.div<WordProps>`
-  position: absolute;
-  left: ${(props) => props.x}px;
-  top: ${(props) => props.y}px;
-  font-size: var(--typing-size);
-  color: ${(props) => props.color};
-  letter-spacing: 2px;
-`;
-
-const Input = styled.input`
-  position: absolute;
-  bottom : 10px;
-  left : 50%;
-  transform: translateX(-50%);
-  font-size: var(--typing-size);
-  width: 10rem;
-  outline: none;
-  user-select: none;
-`;
-
-const ScoreBoard = styled.div`
-  position: absolute; 
-    top: 10px;
-  left : 10px;
-`

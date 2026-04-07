@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Sidebar from "@/features/SideBar";
-import TypingCore from "@/features/typing"; 
-import Keyboard from "@/features/keyboard/Keyboard";
-import typingKeys from "@/features/keyboard/typingKeys";
-import { useAuth } from "@/hooks/useAuth";
-import { ItemContext } from "@/features/typing/long/components/ItemContext";
-import TypingLayout from "@/features/typing/layout";
+import Sidebar from "@/components/SideBar";
+import TypingCore from "@/components/typing"; 
+import Keyboard from "@/components/keyboard/Keyboard";
+import typingKeys from "@/components/keyboard/typingKeys";
+import { useAuth } from "@/features/auth/useAuth";
+import { ItemContext } from "@/components/typing/long/ItemContext";
+import TypingLayout from "@/components/typing/layout";
 import { LongText } from "@/types/long-text";
 
 import { LONG_TEXTS } from "@/constant/longtexts";

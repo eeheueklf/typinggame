@@ -1,12 +1,12 @@
-import keys from '@/features/keyboard/keys'
+import keys from '@/components/keyboard/keys'
 import QuoteTyping from "@/features/typing/QuoteTyping";
-import Keyboard from '@/features/keyboard/Keyboard';
+import Keyboard from '@/components/keyboard/Keyboard';
 import { QUOTES } from '@/constant/quotes'
 import { Suspense } from "react";
-import QuoteSkeleton from "@/features/Skeleton/QuoteSkeleton";
-import KeyboardSkeleton from "@/features/Skeleton/KeyboardSkeleton";
-import TypingLayout from '@/features/typing/layout';
-import Typing from '@/features/typing/index'
+import QuoteSkeleton from "@/components/Skeleton/QuoteSkeleton";
+import KeyboardSkeleton from "@/components/Skeleton/KeyboardSkeleton";
+import TypingLayout from '@/components/typing/layout';
+import Typing from '@/components/typing/index'
 export default function Home() {
 
   const today = new Date();

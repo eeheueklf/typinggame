@@ -1,4 +1,4 @@
-import { splitByLength } from "@/utils/splitByLength";
+import { splitByLength } from "@/features/typing/splitByLength";
 
 export const RAW_TEXTS = {
   1: `여름장이란 애시당초에 글러서 해는 아직 중천에 있건만 장판은 벌써 쓸쓸하고 더운 햇발이 벌려놓은 전시장 밑으로 등줄기를 훅훅 볶는다.

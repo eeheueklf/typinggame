@@ -2,9 +2,9 @@
 import React from "react";
 
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth"
-import ProfileMenu from "@/features/auth/profile/components/ProfileMenu";
-import ScoreGrid from "@/features/auth/profile/components/ScoreGrid";
+import { useAuth } from "@/features/auth/useAuth"
+import ProfileMenu from "@/components/auth/profile/ProfileMenu";
+import ScoreGrid from "@/components/auth/profile/ScoreGrid";
 
 export default function Profile() {
   const { username } = useAuth();

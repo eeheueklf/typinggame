@@ -1,4 +1,4 @@
-import { calculateTotalChars, calculateCpm, calculateCorrectCount, calculateAccuracy} from '@/utils/typingUtils';
+import { calculateTotalChars, calculateCpm, calculateCorrectCount, calculateAccuracy} from '@/features/typing/typingUtils';
 
 describe('타이핑 시스템 핵심 로직 검증 (Unit Test)', () => {
   
