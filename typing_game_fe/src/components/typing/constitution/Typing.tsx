@@ -5,6 +5,7 @@ import styled from "styled-components";
 import * as Hangul from "hangul-js";
 import ResultModal from "./ResultModal";
 import { splitByLength } from "@/features/typing/splitByLength";
+import { useTypingAudio } from "@/features/typing/useTypingAudio";
 
 interface TypingProps {
   content: string;
@@ -41,6 +42,8 @@ const Typing: React.FC<TypingProps> = ({ content, articleIndex, lastPosition, sa
   //   cpm: 0
   // });
 
+  const { playSound } = useTypingAudio();
+
   const [currentLineIndex, setCurrentLineIndex] = useState<number>(initialLineIndex);
   const [inputValue, setInputValue] = useState<string>(""); // 항상 빈 문자열
   const [correctChars, setCorrectChars] = useState<number>(lastPosition);
@@ -69,9 +72,15 @@ const Typing: React.FC<TypingProps> = ({ content, articleIndex, lastPosition, sa
 
   // useCallback?
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  
+
     if (startTime === null) {
       setStartTime(Date.now());
+    }
+
+    if (e.key === " ") {
+      playSound('space');
+    } else if (e.key === "Backspace") {
+      playSound('backspace');
     }
 
     if (e.key === "Enter") {
@@ -198,7 +207,13 @@ const Typing: React.FC<TypingProps> = ({ content, articleIndex, lastPosition, sa
           value={inputValue}
           spellCheck={false} // 맞춤법
           disabled={completed}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            if (newValue !== inputValue && newValue.slice(-1) !== " ") {
+              playSound('normal');
+            }
+            setInputValue(newValue);
+          }}
           onPaste={(e) => {e.preventDefault()}} //붙여넣기 막기
           onDrop={(e) => e.preventDefault()} // 드래그앤드롭막기
           onKeyDown={handleKeyDown}

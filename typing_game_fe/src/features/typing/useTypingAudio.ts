@@ -14,7 +14,7 @@ export const useTypingAudio = () => {
         const context = new AudioContextClass();
         audioContextRef.current = context;
 
-        const response = await fetch('/sound.mp3'); 
+        const response = await fetch('/sound.mp3');
         const arrayBuffer = await response.arrayBuffer();
         const decodedBuffer = await context.decodeAudioData(arrayBuffer);
         audioBufferRef.current = decodedBuffer;
@@ -36,29 +36,35 @@ export const useTypingAudio = () => {
   const playSound = (type: 'normal' | 'space' | 'backspace' = 'normal') => {
     const context = audioContextRef.current;
     const buffer = audioBufferRef.current;
-    
+
     if (!context || !buffer) return;
 
+    const doPlay = () => {
+      let sprite;
+      if (type === 'normal') {
+        const normalSprites = AUDIO_SPRITE.normal;
+        sprite = normalSprites[Math.floor(Math.random() * normalSprites.length)];
+      } else {
+        sprite = AUDIO_SPRITE[type];
+      }
+
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+
+      const pitchRange = type === 'normal' ? 0.06 : 0.02;
+      source.playbackRate.value = (1 - pitchRange / 2) + Math.random() * pitchRange;
+
+      source.connect(context.destination);
+      // context.currentTime 기준으로 즉시 재생 — 0 대신 명시적 타임스탬프로 정밀 스케줄링
+      source.start(context.currentTime, sprite.start, sprite.duration);
+    };
+
+    // resume()이 완료된 후 재생해야 첫 번째 키 입력에서 사운드가 누락되지 않음
     if (context.state === 'suspended') {
-      context.resume();
-    }
-
-    let sprite;
-    if (type === 'normal') {
-      const normalSprites = AUDIO_SPRITE.normal;
-      sprite = normalSprites[Math.floor(Math.random() * normalSprites.length)];
+      context.resume().then(doPlay);
     } else {
-      sprite = AUDIO_SPRITE[type];
+      doPlay();
     }
-
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-
-    const pitchRange = type === 'normal' ? 0.06 : 0.02;
-    source.playbackRate.value = (1 - pitchRange / 2) + Math.random() * pitchRange;
-
-    source.connect(context.destination);
-    source.start(0, sprite.start, sprite.duration);
   };
 
   return { playSound };
